@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Switch, Route } from 'react-router-dom';
 import './App.css';
-import Customerlist from './components/customer/Customerlist';
-import Traininglist from './components/Tranininglist';
+import Customers from './views/customerViews/Customers';
+import Trainings from './views/trainingViews/Trainings';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -37,8 +37,8 @@ class App extends Component {
               </Toolbar>
             </AppBar> 
             <Switch>
-              <Route path="/customers" component={Customerlist}/>
-              <Route path="/trainings" component={Traininglist}/>
+              <Route path="/customers" component={Customers}/>
+              <Route path="/trainings" component={Trainings}/>
             </Switch>   
             </div>
         </BrowserRouter>    

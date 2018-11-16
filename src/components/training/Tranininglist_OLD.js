@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // Custom components imports
-import Addcustomer from './Addcustomer';
+import Addtraining from './Addtraining';
 import Customsnackbar from '../utils/Customsnackbar';
 
 // Dialog imports
@@ -16,13 +16,15 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import MaterialTable from 'material-table';
 import Snackbar from '@material-ui/core/Snackbar';
+import moment from 'moment';
+import AddIcon from '@material-ui/icons/Add';
 
-class Customerlist extends Component {
+class Traininglist extends Component {
 
     constructor(props){
         super(props);
         this.state = {
-            customers: [],
+            trainings: [],
             dialog_opened: false,
             delete_link: '',
             snackbar_opened:false,
@@ -32,9 +34,10 @@ class Customerlist extends Component {
     }
 
     componentDidMount() {
-        this.getAllCustomers();
+        this.getAllTrainings();
     }
 
+    // dialog
     openDialog = (link) => {
         this.setState({
             dialog_opened:true,
@@ -44,7 +47,7 @@ class Customerlist extends Component {
 
     closeDialog = (event, delete_flag) => {
         if(delete_flag === true){
-            this.deleteCustomer();
+            this.deleteTraining();
         }
 
         this.setState({
@@ -53,6 +56,7 @@ class Customerlist extends Component {
         });
     }
 
+    // snackbar
     openSnackbar = () => {
         this.setState({ 
             snackbar_opened: true
@@ -70,28 +74,28 @@ class Customerlist extends Component {
     };
 
     // interact with backend
-    getAllCustomers = () => {
-        fetch('https://customerrest.herokuapp.com/api/customers')
+    getAllTrainings = () => {
+        fetch('https://customerrest.herokuapp.com/api/trainings')
             .then(response => response.json())
             .then(responseData => {
-                this.setState({customers: responseData.content});
+                this.setState({trainings: responseData.content});
             })
     }
 
-    deleteCustomer = () => {
+    deleteTraining = () => {
         fetch(this.state.delete_link, { method: 'DELETE' })
             .then(response => {
-                this.getAllCustomers();   
+                this.getAllTrainings();   
                 if(response.ok){                                 
                     this.setState({
-                        snackbar_message: 'Customer successfully deleted.',
+                        snackbar_message: 'Training successfully deleted.',
                         snackbar_variant: 'success'
                     }, function(){
                         this.openSnackbar();
                     });
                 }else{
                     this.setState({
-                        snackbar_message: 'Impossible to delete customer.',
+                        snackbar_message: 'Impossible to delete training.',
                         snackbar_variant: 'error'
                     }, function(){
                         this.openSnackbar();
@@ -107,26 +111,26 @@ class Customerlist extends Component {
             });
     }
 
-    saveCustomer = (customer) => {
+    saveTraining = (training) => {
         fetch(
-            'https://customerrest.herokuapp.com/api/customers',
+            'https://customerrest.herokuapp.com/api/trainings',
             {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
-                body: JSON.stringify(customer)
+                body: JSON.stringify(training)
             }
         ).then(response => {
-            this.getAllCustomers();   
+            this.getAllTrainings();   
             if(response.ok){                                 
                 this.setState({
-                    snackbar_message: 'Customer successfully created.',
+                    snackbar_message: 'Training successfully created.',
                     snackbar_variant: 'success'
                 }, function(){
                     this.openSnackbar();
                 });
             }else{
                 this.setState({
-                    snackbar_message: 'Impossible to create the customer.',
+                    snackbar_message: 'Impossible to create the training.',
                     snackbar_variant: 'error'
                 }, function(){
                     this.openSnackbar();
@@ -144,36 +148,29 @@ class Customerlist extends Component {
 
     render() {
         const columns = [{
-            title: 'First name',
-            field: 'firstname'
+            title: 'Date',
+            field: 'date',
+            type: 'datetime',
+            render: rowData => {
+                return (
+                    <div>
+                        {moment(rowData.date).format("dddd D.MM.YYYY (HH:mm:ss)")}
+                    </div>
+                );
+            }
         },{
-            title: 'Last name',
-            field: 'lastname'
+            title: 'Duration',
+            field: 'duration'
         },{
-            title: 'Street',
-            field: 'streetaddress'
-        },{
-            title: 'Post code',
-            field: 'postcode'
-        },{
-            title: 'City',
-            field: 'city'
-        },{
-            title: 'Email',
-            field: 'email'
-        },{
-            title: 'Phone',
-            field: 'phone'
-        },{
-            title: '',
-            field: 'links.0.href'
+            title: 'Activity',
+            field: 'activity'
         }];
 
         const actions = [
             {
                 icon: 'delete',
                 tooltip:'Delete',
-                onClick:(event, value) => {this.openDialog(value.links[0].href)} // get the link to the customer
+                onClick:(event, value) => {this.openDialog(value.links[0].href)} // get the link to the training
             }
         ];
 
@@ -183,23 +180,26 @@ class Customerlist extends Component {
                     <Grid item xs={12}>
                         <MaterialTable
                             columns={columns}
-                            data={this.state.customers}
+                            data={this.state.trainings}
                             actions={actions}
-                            title="Customers list"
+                            title="Trainings list"
                         />
-                    </Grid>                
+                    </Grid>               
                 </Grid>
-                <Addcustomer saveCustomer={this.saveCustomer} />
+                <Addtraining ref={(dialog) => { this._dialog = dialog; }} saveTraining={this.saveTraining}/>
+                <Button variant="fab" color="primary" className="fab" onClick={() => this._dialog.handleClickOpen()}>
+                    <AddIcon/>                    
+                </Button>
                 <Dialog
                     open={this.state.dialog_opened}
                     onClose={this.closeDialog}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                 >
-                    <DialogTitle id="alert-dialog-title">{"Delete customer?"}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">{"Delete training?"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            Do you really want to delete this customer?
+                            Do you really want to delete this training?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
@@ -231,4 +231,4 @@ class Customerlist extends Component {
     }
 }
 
-export default Customerlist;
+export default Traininglist;
