@@ -49,8 +49,8 @@ class Traininglist extends Component {
             <div>
                 <MaterialTable
                     columns={columns}
-                    data={this.props.trainings.list}
-                    actions={actions}
+                    data={(this.props.trainings.list[0] && this.props.trainings.list[0].activity) ? this.props.trainings.list : []}
+                    actions={(this.props.trainings.list[0] && this.props.trainings.list[0].activity) ? actions : []}
                     title="Trainings list"
                 />
                 <Alert 

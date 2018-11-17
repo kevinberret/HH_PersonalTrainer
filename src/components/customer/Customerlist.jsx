@@ -3,13 +3,26 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 
 // import all redux utilities
-import { customersFetchAll, deleteCustomer, setCurrentCustomer, resetCurrentCustomer } from '../../actions/customers';
+import { customersFetchAll, deleteCustomer, setCurrentCustomer, resetCurrentCustomer,  openDialogAddCustomer, closeDialogAddCustomer, openDialogEditCustomer } from '../../actions/customers';
 import { openAlert, closeAlert } from '../../actions/utils';
+import { addTraining, openDialogAddTraining, closeDialogAddTraining } from '../../actions/trainings';
 import PropTypes from 'prop-types';
 
 // GUI components imports
 import MaterialTable from 'material-table';
 import Alert from '../utils/Alert';
+
+// GUI imports
+import AddTrainingForm from '../training/AddTrainingForm';
+import Dialog from '@material-ui/core/Dialog';
+
+// Style imports
+import Slide from '@material-ui/core/Slide';
+import Editcustomer from './Editcustomer';
+
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
 
 class Customerlist extends Component {
     componentDidMount() {
@@ -47,12 +60,17 @@ class Customerlist extends Component {
             {
                 icon: 'delete',
                 tooltip:'Delete',
-                onClick:(event, value) => {this.props.setCurrent(value.links[0].href)}
+                onClick:(event, value) => {this.props.setCurrent(value)}
+            },
+            {
+                icon: 'edit',
+                tooltip:'Edit',
+                onClick:(event, value) => {this.props.editCustomer(value)} // get the link to the customer
             },
             {
                 icon: 'add',
                 tooltip:'Add a training',
-                //onClick:(event, value) => {this.openDialog(value.links[0].href)} // get the link to the customer
+                onClick:(event, value) => {this.props.addTraining(value)} // get the link to the customer
             }
         ];
 
@@ -60,8 +78,8 @@ class Customerlist extends Component {
             <div>
                 <MaterialTable
                     columns={columns}
-                    data={this.props.customers.list}
-                    actions={actions}
+                    data={(this.props.customers.list[0] && this.props.customers.list[0].firstname) ? this.props.customers.list : []} // hide if no customers in list: we have to check the first element because when there is no customer, the server returns an array with one object and other informations
+                    actions={(this.props.customers.list[0] && this.props.customers.list[0].firstname) ? actions : []}
                     title="Customers list"
                 />
                 <Alert 
@@ -71,6 +89,25 @@ class Customerlist extends Component {
                     title="Are you sure?"
                     message="Do you really want to delete this customer?"
                 />
+                <Dialog
+                    fullScreen
+                    open={this.props.trainings.add_dialog_open}
+                    onClose={this.handleClose}
+                    TransitionComponent={Transition}
+                >
+                    <AddTrainingForm 
+                        onSubmit={values => this.props.submitTraining(values)}
+                        closeDialog={this.props.closeDialogAddTraining} 
+                        customers={this.props.customers.list}
+                        customer={this.props.customers.current}
+                        initialValues={{
+                            customer: (this.props.customers.current.links) ? this.props.customers.current.links[0].href : '',
+                            date: new Date()
+                        }}
+                        label="Customer"
+                    />
+                </Dialog>
+                <Editcustomer />
             </div>
         );
     }
@@ -78,6 +115,7 @@ class Customerlist extends Component {
 
 const mapStateToProps = state => ({
     customers: state.customers,
+    trainings: state.trainings,
     alert: state.utils.alert
 });
 
@@ -100,6 +138,29 @@ const mapDispatchToProps = dispatch => ({
     deleteCurrent: () => {
         dispatch(deleteCustomer())
         dispatch(closeAlert())
+    },
+    addTraining: (link) => {
+        dispatch(setCurrentCustomer(link))
+        dispatch(openDialogAddTraining())
+    },
+    submitTraining: (training) => {
+        dispatch(addTraining(training));
+    },      
+    openDialogAddTraining: () => {
+        dispatch(openDialogAddTraining())
+    },
+    closeDialogAddTraining: () => {
+        dispatch(closeDialogAddTraining())
+    },
+    editCustomer: (customer) => {
+        dispatch(setCurrentCustomer(customer))
+        dispatch(openDialogEditCustomer())
+    },       
+    openDialogAddCustomer: () => {
+        dispatch(openDialogAddCustomer())
+    },
+    closeDialogAddCustomer: () => {
+        dispatch(closeDialogAddCustomer())
     }
 });
 

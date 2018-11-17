@@ -38,7 +38,7 @@ const renderTextField = ({
     />
 )
 
-const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
+const EditCustomerForm = ({ handleSubmit, closeDialog }) => (
     <form onSubmit={handleSubmit} >
         <div>
             <AppBar style={styles.appBar}>
@@ -47,7 +47,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                         <CloseIcon />
                     </IconButton>
                     <Typography variant="h6" color="inherit" style={styles.flex}>
-                        Add a new customer
+                        Modify a customer
                     </Typography>                
                     <Button color="inherit" type="submit">
                         save
@@ -132,4 +132,4 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
         </div>
     </form>
 )
-export default reduxForm({form: 'addCustomerForm'})(AddCustomerForm);
+export default reduxForm({form: 'editCustomerForm'})(EditCustomerForm);

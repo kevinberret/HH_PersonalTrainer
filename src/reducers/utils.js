@@ -9,7 +9,7 @@ export const initialState = {
     snackbar:{
       open: false,
       message: '',
-      variant: '',
+      variant: 'info',
     }
 };
 

@@ -59,6 +59,25 @@ export const addCustomer_ERR = () => (
     }
 );
 
+export const editCustomer_REQ = (customer) => (
+    {
+        type: ActionType.EDIT_CUSTOMER_REQ,
+        JSON: customer,
+    }
+);
+
+export const editCustomer_OK = () => (
+    {
+        type: ActionType.EDIT_CUSTOMER_OK
+    }
+);
+
+export const editCustomer_ERR = () => (
+    {
+        type: ActionType.EDIT_CUSTOMER_ERR
+    }
+);
+
 export const deleteCustomer_REQ = () => (
     {
         type: ActionType.DELETE_CUSTOMER_REQ
@@ -89,10 +108,22 @@ export const closeDialogAddCustomer_REQ = () => (
     }
 );
 
-export const setCurrentCustomer_REQ = (link) => (
+export const openDialogEditCustomer_REQ = () => (
+    {
+        type: ActionType.OPEN_DIALOG_EDIT_CUSTOMER_REQ,
+    }
+);
+
+export const closeDialogEditCustomer_REQ = () => (
+    {
+        type: ActionType.CLOSE_DIALOG_EDIT_CUSTOMER_REQ,
+    }
+);
+
+export const setCurrentCustomer_REQ = (customer) => (
     {
         type: ActionType.SET_CURRENT_CUSTOMER,
-        link: link
+        current: customer
     }
 );
 
@@ -123,7 +154,7 @@ export function customersFetchAll(){
     }
 }
 
-export function customerFetchById(id){
+export function customerFetchById(link){
     return async(dispatch, getState) => {
         //get the current state of the store
         const { customers } = getState();
@@ -131,7 +162,7 @@ export function customerFetchById(id){
         if(!customers.isLoading){
             dispatch(fetchCustomerById_REQ());
 
-            fetch(`https://customerrest.herokuapp.com/api/customers/${id}`)
+            fetch(link)
                 .then(response => response.json())
                 .then(responseData => {
                     dispatch(fetchCustomerById_OK(responseData.content));
@@ -144,6 +175,7 @@ export function customerFetchById(id){
 
 export function addCustomer(customer){
     return async(dispatch, getState) => {
+        console.log('add')
         //get the current state of the store
         const { customers } = getState();
         if(!customers.isLoading){
@@ -180,6 +212,46 @@ export function addCustomer(customer){
     }
 }
 
+export function editCustomer(customer){
+    return async(dispatch, getState) => {
+        //get the current state of the store
+        const { customers } = getState();
+        console.log(customer)
+        if(!customers.isLoading){
+            dispatch(editCustomer_REQ(customer));
+
+            fetch(
+                customers.current.links[0].href,
+                {
+                    method: 'PUT',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify(customer)
+                }
+            ).then(response => {
+                if(response.ok){
+                    dispatch(editCustomer_OK());
+                    dispatch(resetCurrentCustomer_REQ());
+                    dispatch(closeDialogEditCustomer_REQ());
+                    dispatch(customersFetchAll());
+                    dispatch(setSnackbarText('Customer successfully updated.'));
+                    dispatch(setSnackbarVariant('success'));
+                    dispatch(openSnackbar());
+                }else{
+                    dispatch(editCustomer_ERR());
+                    dispatch(setSnackbarText('Impossible to update the customer.'));
+                    dispatch(setSnackbarVariant('error'));
+                    dispatch(openSnackbar());
+                }
+            }).catch((error) => {
+                dispatch(editCustomer_ERR());
+                dispatch(setSnackbarText('Error with the server. Please contact administrator.'));
+                dispatch(setSnackbarVariant('error'));
+                dispatch(openSnackbar());
+            })
+        }
+    }
+}
+
 export function deleteCustomer(){
     return async(dispatch, getState) => {
         //get the current state of the store
@@ -189,7 +261,7 @@ export function deleteCustomer(){
             dispatch(deleteCustomer_REQ());
             
             fetch(
-                customers.current, 
+                customers.current.links[0].href, 
                 {
                     method: 'DELETE'
                 }
@@ -231,10 +303,22 @@ export function closeDialogAddCustomer(){
     }
 }
 
-export function setCurrentCustomer(link){
-    console.log(link);
+export function openDialogEditCustomer(){
     return async(dispatch, getState) => {
-        dispatch(setCurrentCustomer_REQ(link));
+        dispatch(openDialogEditCustomer_REQ());
+    }
+}
+
+export function closeDialogEditCustomer(){
+    return async(dispatch, getState) => {
+        dispatch(closeDialogEditCustomer_REQ());
+    }
+}
+
+export function setCurrentCustomer(customer){
+    console.log(customer);
+    return async(dispatch, getState) => {
+        dispatch(setCurrentCustomer_REQ(customer));
     }
 }
 

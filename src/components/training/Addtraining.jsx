@@ -28,7 +28,7 @@ class Addtraining extends Component {
     render() {
         return (
             <div>
-                <Button variant="fab" color="primary" className="fab" onClick={this.props.openDialogAddTraining}>
+                <Button variant="fab" color="primary" className="fab" onClick={this.props.openDialogAddTraining}  disabled={!(this.props.customers.list[0] && this.props.customers.list[0].firstname)}> {/* check if there are customers. if no customers, we can't add new trainings!! */ }
                     <AddIcon/>                    
                 </Button>
                 <Dialog
@@ -41,6 +41,8 @@ class Addtraining extends Component {
                         onSubmit={values => this.props.submit(values)}
                         closeDialog={this.props.closeDialogAddTraining} 
                         customers={this.props.customers.list}
+                        customer={null}
+                        initialValues={{date: new Date()}}
                         label="Customer"
                     />
                 </Dialog>

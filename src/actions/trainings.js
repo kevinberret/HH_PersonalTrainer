@@ -1,5 +1,6 @@
 import ActionType from '../constants/actions-types';
-import { setSnackbarText, setSnackbarVariant, openSnackbar } from './utils'
+import { setSnackbarText, setSnackbarVariant, openSnackbar } from './utils';
+import { resetCurrentCustomer_REQ } from './customers';
 
 export const fetchAllTrainings_REQ = () => (
     {
@@ -159,6 +160,7 @@ export function addTraining(training){
             ).then(response => {
                 if(response.ok){
                     dispatch(addTraining_OK());
+                    dispatch(resetCurrentCustomer_REQ());
                     dispatch(closeDialogAddTraining_REQ());
                     dispatch(trainingsFetchAll());
                     dispatch(setSnackbarText('Training successfully created.'));

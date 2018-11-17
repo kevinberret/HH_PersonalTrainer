@@ -32,7 +32,11 @@ class Addcustomer extends Component {
                     onClose={this.handleClose}
                     TransitionComponent={Transition}
                 >
-                    <AddCustomerForm onSubmit={values => this.props.submit(values)} closeDialog={this.props.closeDialogAddCustomer} />
+                    <AddCustomerForm 
+                        onSubmit={values => this.props.submit(values)} 
+                        closeDialog={this.props.closeDialogAddCustomer} 
+                        edit={false}
+                    />
                 </Dialog>
             </div>
         );
@@ -46,6 +50,7 @@ const mapStateToProps = state => ({
 //loads dispatch methods to components props
 const mapDispatchToProps = dispatch => ({
         submit: (customer) => {
+            console.log('ADD CUSTOMER')
             dispatch(addCustomer(customer));
         },        
         openDialogAddCustomer: () => {

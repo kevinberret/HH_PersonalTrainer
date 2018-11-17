@@ -5,6 +5,7 @@ export const initialState = {
     list: [],
     isLoading: false,
     add_dialog_open: false,
+    edit_dialog_open: false,
     current: ''
 };
 
@@ -51,7 +52,7 @@ export default function customers(state = initialState, action){
         case ActionTypes.SET_CURRENT_CUSTOMER:
           return {
             ...state,
-            current: action.link,
+            current: action.current,
           };
 
         case ActionTypes.RESET_CURRENT_CUSTOMER:
@@ -96,6 +97,23 @@ export default function customers(state = initialState, action){
             isLoading: false,
           };
 
+        // EDIT
+        case ActionTypes.EDIT_CUSTOMER_REQ:
+          return {
+            ...state,
+            isLoading: true,
+          };
+        case ActionTypes.EDIT_CUSTOMER_OK:
+          return {
+            ...state,
+            isLoading: false,
+          };
+        case ActionTypes.EDIT_CUSTOMER_ERR:
+          return{
+            ...state,
+            isLoading: false,
+          };
+
         case ActionTypes.OPEN_DIALOG_ADD_CUSTOMER_REQ:
           return {
             ...state,
@@ -106,7 +124,19 @@ export default function customers(state = initialState, action){
           return {
             ...state,
             add_dialog_open: false,
-          };          
+          };
+          
+          case ActionTypes.OPEN_DIALOG_EDIT_CUSTOMER_REQ:
+          return {
+            ...state,
+            edit_dialog_open: true,
+          };
+
+        case ActionTypes.CLOSE_DIALOG_EDIT_CUSTOMER_REQ:
+          return {
+            ...state,
+            edit_dialog_open: false,
+          };
 
         default:
             return state;
