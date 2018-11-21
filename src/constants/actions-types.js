@@ -79,6 +79,9 @@ const ActionTypes = {
     GET_EVENTS_REQ: "GET_EVENTS_REQ",
     GET_EVENTS_OK: "GET_EVENTS_OK",
     GET_EVENTS_ERR: "GET_EVENTS_ERR",
+
+    // LOGIN
+    FETCH_USER: "FETCH_USER"
 };
 
 export default ActionTypes;

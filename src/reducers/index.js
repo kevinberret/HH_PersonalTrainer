@@ -5,6 +5,7 @@ import customers from './customers';
 import trainings from './trainings';
 import utils from './utils';
 import agenda from './agenda';
+import auth from './auth.js';
 
 const rootReducer = () => (
     combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = () => (
         trainings,
         utils,
         agenda,
+        auth,
         form:formReducer,
     })
 );
