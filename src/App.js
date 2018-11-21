@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Customers from './views/customerViews/Customers';
 import Trainings from './views/trainingViews/Trainings';
+import Calendar from './views/calendarView/Calendar';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -34,11 +35,15 @@ class App extends Component {
                 <Button color="inherit" component={Link} to="/trainings">
                   Trainings
                 </Button>
+                <Button color="inherit" component={Link} to="/agenda">
+                  Agenda
+                </Button>
               </Toolbar>
             </AppBar> 
             <Switch>
               <Route path="/customers" component={Customers}/>
               <Route path="/trainings" component={Trainings}/>
+              <Route path="/agenda" component={Calendar}/>
             </Switch>   
             </div>
         </BrowserRouter>    

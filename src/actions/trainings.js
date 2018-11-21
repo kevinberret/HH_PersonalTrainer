@@ -1,6 +1,7 @@
 import ActionType from '../constants/actions-types';
 import { setSnackbarText, setSnackbarVariant, openSnackbar } from './utils';
 import { resetCurrentCustomer_REQ } from './customers';
+import { getEvents } from './agenda';
 
 export const fetchAllTrainings_REQ = () => (
     {
@@ -103,6 +104,25 @@ export const resetCurrentTraining_REQ = () => (
     }
 );
 
+export const getTrainingsAndCustomers_REQ = () => (
+    {
+        type: ActionType.GET_TRAININGS_AND_CUSTOMERS_REQ,
+    }
+);
+
+export const getTrainingsAndCustomers_OK = (list) => (
+    {
+        type: ActionType.GET_TRAININGS_AND_CUSTOMERS_OK,
+        list: list
+    }
+);
+
+export const getTrainingsAndCustomers_ERR = () => (
+    {
+        type: ActionType.GET_TRAININGS_AND_CUSTOMERS_ERR,
+    }
+);
+
 // functions
 export function trainingsFetchAll(){
     return async(dispatch, getState) => {
@@ -119,6 +139,28 @@ export function trainingsFetchAll(){
                     dispatch(fetchAllTrainings_OK(responseData.content));
                 }).catch((error) => {
                     dispatch(fetchAllTrainings_ERR());
+                })
+        }        
+    }
+}
+
+export function getTrainingsAndCustomers(){
+    return async(dispatch, getState) => {
+        //get the current state of the store
+        const { trainings } = getState();
+
+        if(!trainings.isLoading){
+            //dispatches start action from the requestClients creator defined above
+            dispatch(getTrainingsAndCustomers_REQ());
+
+            fetch('https://customerrest.herokuapp.com/gettrainings')
+                .then(response => response.json())
+                .then(responseData => {
+                    console.log(responseData)
+                    dispatch(getTrainingsAndCustomers_OK(responseData));
+                    dispatch(getEvents());
+                }).catch((error) => {                    
+                    dispatch(getTrainingsAndCustomers_ERR());
                 })
         }        
     }

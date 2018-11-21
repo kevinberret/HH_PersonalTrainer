@@ -3,6 +3,7 @@ import ActionTypes from '../constants/actions-types';
 //Define initial state for the store
 export const initialState = {
     list: [],
+    listWithCustomers: [],
     isLoading: false,
     add_dialog_open: false,
     current: ''
@@ -46,6 +47,25 @@ export default function trainings(state = initialState, action){
             ...state,
             isLoading: false,
         };
+
+        case ActionTypes.GET_TRAININGS_AND_CUSTOMERS_REQ:
+          return {
+            ...state,
+            isLoading:true
+          };
+
+        case ActionTypes.GET_TRAININGS_AND_CUSTOMERS_OK:
+          return {
+            ...state,
+            listWithCustomers: action.list,
+            isLoading: false,
+          };
+
+        case ActionTypes.GET_TRAININGS_AND_CUSTOMERS_ERR:
+          return {
+            ...state,
+            isLoading: false,
+          };
 
         // SET TRAINING
         case ActionTypes.SET_CURRENT_TRAINING:
