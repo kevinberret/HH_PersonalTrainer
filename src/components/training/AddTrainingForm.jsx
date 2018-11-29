@@ -173,8 +173,7 @@ const AddTrainingForm = ({ handleSubmit, closeDialog, customers, customer, prist
                         <Field 
                             label="Activity"
                             name="activity"
-                            component={renderTextField}
-                            required                           
+                            component={renderTextField}                                                       
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -183,7 +182,7 @@ const AddTrainingForm = ({ handleSubmit, closeDialog, customers, customer, prist
                             name="date"
                             component={renderDateField}
                             fullWidth
-                            required />
+                        />
                     </Grid>
                     <Grid item xs={6}>
                         <Field 
@@ -191,7 +190,7 @@ const AddTrainingForm = ({ handleSubmit, closeDialog, customers, customer, prist
                             name="duration"
                             component={renderNumericTextField}
                             fullWidth
-                            required />
+                        />
                     </Grid>
                     {!customer && 
                     <Grid item xs={12}>
@@ -200,7 +199,7 @@ const AddTrainingForm = ({ handleSubmit, closeDialog, customers, customer, prist
                             name="customer"
                             component={renderSelectField}
                             fullWidth
-                            required>
+                        >
                             {
                                 renderMenuItems(customers)
                             }

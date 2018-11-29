@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 
 // GUI imports
-import AddCustomerForm from './AddCustomerForm';
+import CustomerForm from './CustomerForm';
 import Dialog from '@material-ui/core/Dialog';
   
 function Transition(props) {
@@ -32,7 +32,7 @@ class Addcustomer extends Component {
                     onClose={this.handleClose}
                     TransitionComponent={Transition}
                 >
-                    <AddCustomerForm 
+                    <CustomerForm
                         onSubmit={values => this.props.submit(values)} 
                         closeDialog={this.props.closeDialogAddCustomer} 
                         edit={false}
@@ -50,7 +50,6 @@ const mapStateToProps = state => ({
 //loads dispatch methods to components props
 const mapDispatchToProps = dispatch => ({
         submit: (customer) => {
-            console.log('ADD CUSTOMER')
             dispatch(addCustomer(customer));
         },        
         openDialogAddCustomer: () => {

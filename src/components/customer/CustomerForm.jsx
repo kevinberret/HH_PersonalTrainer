@@ -10,7 +10,12 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import { TextField } from '@material-ui/core';
+
+// form components
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 
 const styles = {
     appBar: {
@@ -25,20 +30,62 @@ const styles = {
     },
 };
 
+const validate = values => {
+    const error = {};
+    error.firstname = '';
+    error.lastname = '';
+    error.streetaddress = '';
+    error.postcode = '';
+    error.city = '';
+    error.email = '';
+    error.phone = '';
+
+    if (values.firstname === undefined || values.firstname.length < 1 || values.firstname === '') {
+        error.firstname = 'Please provide a first name';
+    }
+
+    if (values.lastname === undefined || values.lastname.length < 1 || values.lastname === '') {
+        error.lastname = 'Please provide a last name';
+    }
+
+    if (values.streetaddress === undefined || values.streetaddress.length < 1 || values.streetaddress === '') {
+        error.streetaddress = 'Please provide a street address';
+    }
+
+    if (values.postcode === undefined || values.postcode.length < 1 || values.postcode === '') {
+        error.postcode = 'Please provide a ZIP';
+    }
+
+    if (values.city === undefined || values.city.length < 1 || values.city === '') {
+        error.city = 'Please provide a city';
+    }
+
+    // regexp for email from redux form validation examples
+    if (values.email === undefined || values.email.length < 1 || values.email === '' || !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        error.email = 'Please provide a valid email';
+    }
+
+    if (values.phone === undefined || values.phone.length < 1 || values.phone === '' || !/^[0-9-.]+$/i.test(values.phone)) {
+        error.phone = 'Please provide a valid phone number';
+    }
+
+    return error;
+};
+
 const renderTextField = ({
     input,
     label,
     meta: { touched, error },
     ...custom
   }) => (
-    <TextField
-      label={label}
-      {...input}
-      {...custom}
-    />
+        <FormControl {...custom} error={Boolean(touched && error)}>
+            <InputLabel>{label}</InputLabel>
+            <Input {...input}  />
+            {touched && error && <FormHelperText>{error}</FormHelperText>}
+        </FormControl>
 )
 
-const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
+const CustomerForm = ({ handleSubmit, closeDialog, edit }) => (
     <form onSubmit={handleSubmit} >
         <div>
             <AppBar style={styles.appBar}>
@@ -47,7 +94,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                         <CloseIcon />
                     </IconButton>
                     <Typography variant="h6" color="inherit" style={styles.flex}>
-                        Add a new customer
+                        {(edit) ? 'Modify a customer' : 'Add a new customer' }
                     </Typography>                
                     <Button color="inherit" type="submit">
                         save
@@ -67,7 +114,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                             name="firstname"
                             component={renderTextField}
                             fullWidth
-                            required />
+                        />
                     </Grid>
                     <Grid item xs={6}>
                         <Field 
@@ -75,7 +122,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                             name="lastname"
                             component={renderTextField}
                             fullWidth
-                            required />
+                         />
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="h6" color="inherit" style={styles.grow}>
@@ -88,7 +135,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                             name="streetaddress"
                             component={renderTextField}
                             fullWidth
-                            required />                             
+                        />                             
                     </Grid>
                     <Grid item xs={4}>
                         <Field 
@@ -96,7 +143,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                             name="postcode"
                             component={renderTextField}
                             fullWidth
-                            required />                                
+                        />                                
                     </Grid>
                     <Grid item xs={4}>
                         <Field 
@@ -104,7 +151,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                             name="city"
                             component={renderTextField}
                             fullWidth
-                            required />                               
+                        />                               
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="h6" color="inherit" style={styles.grow}>
@@ -117,7 +164,7 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                             name="email"
                             component={renderTextField}
                             fullWidth
-                            required />                             
+                        />                             
                     </Grid>
                     <Grid item xs={6}>
                         <Field 
@@ -125,11 +172,11 @@ const AddCustomerForm = ({ handleSubmit, closeDialog }) => (
                             name="phone"
                             component={renderTextField}
                             fullWidth
-                            required />                         
+                        />                         
                     </Grid>
                 </Grid>
             </div>
         </div>
     </form>
 )
-export default reduxForm({form: 'addCustomerForm'})(AddCustomerForm);
+export default reduxForm({form: 'customerForm', validate})(CustomerForm);

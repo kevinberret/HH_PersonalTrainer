@@ -7,7 +7,7 @@ import { editCustomer, openDialogEditCustomer, closeDialogEditCustomer } from '.
 import Slide from '@material-ui/core/Slide';
 
 // GUI imports
-import EditCustomerForm from './EditCustomerForm';
+import CustomerForm from './CustomerForm';
 import Dialog from '@material-ui/core/Dialog';
   
 function Transition(props) {
@@ -25,7 +25,7 @@ class Editcustomer extends Component {
                     onClose={this.closeDialogEditCustomer}
                     TransitionComponent={Transition}
                 >
-                    <EditCustomerForm
+                    <CustomerForm
                         onSubmit={values => this.props.submit(values)} 
                         closeDialog={this.props.closeDialogEditCustomer}
                         initialValues={{
@@ -37,6 +37,7 @@ class Editcustomer extends Component {
                             email: this.props.customers.current.email,
                             phone: this.props.customers.current.phone,
                         }}
+                        edit={true}
                     />
                 </Dialog>
             </div>
